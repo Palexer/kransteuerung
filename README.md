@@ -9,3 +9,7 @@ Die Software für die Kransteuerung des Port2Port Wettbewerbs 2021.
 - Python
 - PyQt5
 - RPi.GPIO
+
+## Lizenz
+
+- GPL v3
