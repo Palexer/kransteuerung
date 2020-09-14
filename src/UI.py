@@ -8,7 +8,7 @@ class UI(QWidget):
     def __init__(self):
         super().__init__()
         self.mainUI()
-        # self.showFullScreen()
+        #self.showFullScreen()
         self.setWindowTitle("Kransteuerung")
 
     def mainUI(self):
@@ -25,14 +25,14 @@ class UI(QWidget):
         self.joystick_left = Joystick()
         self.joystick_right = Joystick()
 
-        # slider for servo
-        self.slider = QSlider(Qt.Horizontal, self)
-        self.slider.setValue(50)
-
-        self.slider_text = QLabel(self)
-        self.slider_text.setText("Servomotor")
+        # buttons for servo
+        self.servo_plus = QPushButton("+", self)
+        self.servo_minus = QPushButton("-", self)
         
 
+        self.slider_text = QLabel(self)
+        self.slider_text.setText("Servomotor: ")
+        
         # layout
         self.hbox_top = QHBoxLayout()
         self.hbox_top.addStretch()
@@ -48,7 +48,8 @@ class UI(QWidget):
         self.hbox_mid = QHBoxLayout()
         self.hbox_mid.addWidget(self.joystick_left)
         self.hbox_mid.addStretch()
-        self.hbox_mid.addWidget(self.slider)
+        self.hbox_mid.addWidget(self.servo_plus)
+        self.hbox_mid.addWidget(self.servo_minus)
         self.hbox_mid.addStretch()
         self.hbox_mid.addWidget(self.joystick_right)
 
