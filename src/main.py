@@ -1,6 +1,6 @@
 from UI import UI
 from PyQt5.QtWidgets import QApplication
-import RPi.GPIO as g
+import RPi.GPIO as io
 from time import sleep
 
 
@@ -13,33 +13,54 @@ class App(UI):
     
     def servo(self, increment:bool):
         servoPin = 17
-        g.setmode(g.BCM)
-        g.setup(servoPin, g.OUT)
+        io.setmode(io.BCM)
+        io.setup(servoPin, io.OUT)
                 
-        p = g.PWM(servoPin, 50)
-        p.start(50)
+        io = io.PWM(servoPin, 50)
+        io.start(5)
     
         try:
-            if increment == True and self.position < 100:
-                self.position += 1
-                p.ChangeDutyCycle(self.position)
-                sleep(1)
-                p.ChangeDutyCycle(0)
+            try:
+                if increment == True:
+                    self.position += 1
+                    p.ChangeDutyCycle(self.position)
+                    sleep(1)
+                    p.ChangeDutyCycle(0)
 
-            elif increment == False and self.position > 0:
-                self.position -= 1
-                p.ChangeDutyCycle(self.position)
-                sleep(1)
-                p.ChangeDutyCycle(0)
+                else:
+                    self.position -= 1
+                    p.ChangeDutyCycle(self.position)
+                    sleep(1)
+                    p.ChangeDutyCycle(0)
 
-            p.stop()
-            g.cleanup()
+            except ValueError:
+                pass
                     
         except KeyboardInterrupt:
             p.stop()
             g.cleanup()
-    
-                
+
+    def dc_motor():
+        io.setmode(io.BCM)
+        
+        ena = 25
+        in1 = 24
+        in2 = 23
+        
+        io.setwarnings(False)
+        io.setup(in1, io.OUT)
+        io.setup(in2, io.OUT)
+        io.setup(ena, io.OUT)
+        
+        pwm = io.PWM(ena, 100)
+        pwm.start(0)      
+        
+        io.output(in1, True)
+        io.output(in2, False)
+
+    def pwm_change(value):
+        pwm.ChangeDutyCycle(float(value))
+             
 def main():
     import sys
     app = QApplication(sys.argv)
