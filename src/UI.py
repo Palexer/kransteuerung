@@ -21,9 +21,8 @@ class UI(QWidget):
         self.toggle_electric_magnet.setCheckable(True)
         self.toggle_electric_magnet.setText("On/Off")
 
-        # Create joystick
-        self.joystick_left = Joystick()
-        self.joystick_right = Joystick()
+        # slider for dc motor
+        self.slider_dc_motor = QSlider(Qt.Horizontal, self)
 
         # buttons for servo
         self.servo_plus = QPushButton("+", self)
@@ -46,12 +45,11 @@ class UI(QWidget):
         self.hbox_top2.addStretch()
 
         self.hbox_mid = QHBoxLayout()
-        self.hbox_mid.addWidget(self.joystick_left)
+        self.hbox_mid.addWidget(self.slider_dc_motor)
         self.hbox_mid.addStretch()
         self.hbox_mid.addWidget(self.servo_plus)
         self.hbox_mid.addWidget(self.servo_minus)
         self.hbox_mid.addStretch()
-        self.hbox_mid.addWidget(self.joystick_right)
 
         self.vbox_main = QVBoxLayout(self)
         self.vbox_main.addLayout(self.hbox_top)

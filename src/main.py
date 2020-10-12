@@ -1,23 +1,24 @@
 from UI import UI
 from PyQt5.QtWidgets import QApplication
-import RPi.GPIO as io
+import RPi.GPIO as g
 from time import sleep
 
 
 class App(UI):
     def __init__(self):
-        super().__init__() 
+        super().__init__()
         self.position = 0
         self.servo_plus.clicked.connect(lambda _: self.servo(True))  
-        self.servo_minus.clicked.connect(lambda _: self.servo(False))  
+        self.servo_minus.clicked.connect(lambda _: self.servo(False)) 
+        self.slider_dc_motor.valueChanged.connect(lambda _: self.dc_motor(self.slider_dc_motor.value())) 
     
-    def servo(self, increment:bool):
+    def servo(self, increment):
         servoPin = 17
-        io.setmode(io.BCM)
-        io.setup(servoPin, io.OUT)
+        g.setmode(g.BCM)
+        g.setup(servoPin, g.OUT)
                 
-        io = io.PWM(servoPin, 50)
-        io.start(5)
+        p = g.PWM(servoPin, 50)
+        p.start(5)
     
         try:
             try:
@@ -40,27 +41,31 @@ class App(UI):
             p.stop()
             g.cleanup()
 
-    def dc_motor():
-        io.setmode(io.BCM)
-        
-        ena = 25
-        in1 = 24
-        in2 = 23
-        
-        io.setwarnings(False)
-        io.setup(in1, io.OUT)
-        io.setup(in2, io.OUT)
-        io.setup(ena, io.OUT)
-        
-        pwm = io.PWM(ena, 100)
-        pwm.start(0)      
-        
-        io.output(in1, True)
-        io.output(in2, False)
+    def dc_motor(self, value):
+        try:
+            g.setmode(g.BCM)
+            
+            ena = 25
+            in1 = 24
+            in2 = 23
+            
+            g.setwarnings(False)
+            g.setup(in1, g.OUT)
+            g.setup(in2, g.OUT)
+            g.setup(ena, g.OUT)
+            
+            pwm = g.PWM(ena, 100)
+            pwm.start(0)
 
-    def pwm_change(value):
-        pwm.ChangeDutyCycle(float(value))
-             
+            pwm.ChangeDutyCycle(float(value)) # rotation
+                    
+            g.output(in1, True)
+            g.output(in2, False)
+
+        except KeyboardInterrupt:
+            pwm.stop()
+            g.cleanup()
+ 
 def main():
     import sys
     app = QApplication(sys.argv)
