@@ -27,6 +27,7 @@ class App(UI):
         
         gpio.output(self.in1, True)
         gpio.output(self.in2, False)
+        
     
         # connect functions to widgets        
         self.servo_plus.clicked.connect(lambda _: self.servo(True))  
