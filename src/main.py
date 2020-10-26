@@ -1,23 +1,45 @@
 from UI import UI
 from PyQt5.QtWidgets import QApplication
-import RPi.GPIO as g
+import RPi.GPIO as gpio
 from time import sleep
-
 
 class App(UI):
     def __init__(self):
         super().__init__()
         self.position = 0
+        self.rotation_value = 0
+        self.dc_setup = False
+
+        # setup for dc motor
+        gpio.setmode(gpio.BCM)
+        
+        self.ena = 25
+        self.in1 = 24
+        self.in2 = 23
+
+        gpio.setwarnings(False)
+        gpio.setup(self.in1, gpio.OUT)
+        gpio.setup(self.in2, gpio.OUT)
+        gpio.setup(self.ena, gpio.OUT)
+        
+        self.pwm = gpio.PWM(self.ena, 100)
+        self.pwm.start(0)
+        
+        gpio.output(self.in1, True)
+        gpio.output(self.in2, False)
+    
+        # connect functions to widgets        
         self.servo_plus.clicked.connect(lambda _: self.servo(True))  
         self.servo_minus.clicked.connect(lambda _: self.servo(False)) 
-        self.slider_dc_motor.valueChanged.connect(lambda _: self.dc_motor(self.slider_dc_motor.value())) 
+        self.slider_dc_motor.valueChanged.connect(self.pwm_change) 
+
     
     def servo(self, increment):
         servoPin = 17
-        g.setmode(g.BCM)
-        g.setup(servoPin, g.OUT)
+        gpio.setmode(gpio.BCM)
+        gpio.setup(servoPin, gpio.OUT)
                 
-        p = g.PWM(servoPin, 50)
+        p = gpio.PWM(servoPin, 50)
         p.start(5)
     
         try:
@@ -39,32 +61,11 @@ class App(UI):
                     
         except KeyboardInterrupt:
             p.stop()
-            g.cleanup()
-
-    def dc_motor(self, value):
-        try:
-            g.setmode(g.BCM)
+            gpio.cleanup()
             
-            ena = 25
-            in1 = 24
-            in2 = 23
             
-            g.setwarnings(False)
-            g.setup(in1, g.OUT)
-            g.setup(in2, g.OUT)
-            g.setup(ena, g.OUT)
-            
-            pwm = g.PWM(ena, 100)
-            pwm.start(0)
-
-            pwm.ChangeDutyCycle(float(value)) # rotation
-                    
-            g.output(in1, True)
-            g.output(in2, False)
-
-        except KeyboardInterrupt:
-            pwm.stop()
-            g.cleanup()
+    def pwm_change(self, value):
+        self.pwm.ChangeDutyCycle(float(value))
  
 def main():
     import sys
