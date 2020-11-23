@@ -1,4 +1,4 @@
-from UI import UI
+from ui import UI
 from PyQt5.QtWidgets import QApplication
 import RPi.GPIO as gpio
 from time import sleep
@@ -9,7 +9,8 @@ class App(UI):
         self.position = 0
         self.rotation_value = 0
         self.dc_setup = False
-
+        self.magnetOn = False
+        
         # setup for dc motor
         gpio.setmode(gpio.BCM)
         
@@ -33,7 +34,7 @@ class App(UI):
         self.servo_plus.clicked.connect(lambda _: self.servo(True))  
         self.servo_minus.clicked.connect(lambda _: self.servo(False)) 
         self.slider_dc_motor.valueChanged.connect(self.pwm_change) 
-
+        self.toggle_electric_magnet.clicked.connect(self.magnet)
     
     def servo(self, increment):
         servoPin = 17
@@ -67,6 +68,15 @@ class App(UI):
             
     def pwm_change(self, value):
         self.pwm.ChangeDutyCycle(float(value))
+
+    def magnet(self):
+        if self.magnetOn:
+            self.magnetOn = False
+            gpio.setup(5, gpio.OUT)
+        else:
+            self.magnetOn = True
+            gpio.setup(5, gpio.IN)
+            
  
 def main():
     import sys
@@ -74,6 +84,7 @@ def main():
     window = App()
     window.show()
     sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
     main()
