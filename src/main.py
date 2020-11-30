@@ -9,7 +9,7 @@ class App(UI):
         self.position = 0
         self.rotation_value = 0
         self.dc_setup = False
-        self.magnetOn = False
+        self.magnetOn = True
         
         # setup for dc motor
         gpio.setmode(gpio.BCM)
@@ -72,10 +72,12 @@ class App(UI):
     def magnet(self):
         if self.magnetOn:
             self.magnetOn = False
-            gpio.setup(5, gpio.OUT)
+            gpio.setup(18, gpio.OUT)
+            gpio.output(18, gpio.HIGH)
         else:
             self.magnetOn = True
-            gpio.setup(5, gpio.IN)
+            gpio.setup(18, gpio.OUT)
+            gpio.output(18, gpio.LOW)
             
  
 def main():
