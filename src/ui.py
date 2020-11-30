@@ -4,7 +4,6 @@ from joystick import Joystick
 
 
 class UI(QWidget):
-
     def __init__(self):
         super().__init__()
         self.mainUI()
@@ -57,3 +56,4 @@ class UI(QWidget):
         self.vbox_main.addLayout(self.hbox_top)
         self.vbox_main.addLayout(self.hbox_mid)
         self.vbox_main.addLayout(self.hbox_bottom)
+        self.vbox_main.addStretch()
