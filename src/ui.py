@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from joystick import Joystick
+import sys
 
 
 class UI(QWidget):
@@ -8,6 +8,7 @@ class UI(QWidget):
         super().__init__()
         self.mainUI()
         self.setWindowTitle("Kransteuerung")
+        self.showFullScreen()
 
     def mainUI(self):
 
@@ -33,7 +34,11 @@ class UI(QWidget):
 
         self.slider_text = QLabel(self)
         self.slider_text.setText("DC Motor ")
-        
+
+        self.quit_btn = QPushButton(self)
+        self.quit_btn.setText("Beenden")
+        self.quit_btn.clicked.connect(sys.exit)
+
         # layout
         self.hbox_top = QHBoxLayout()
         self.hbox_top.addWidget(self.label_electric_magnet)
@@ -57,3 +62,4 @@ class UI(QWidget):
         self.vbox_main.addLayout(self.hbox_mid)
         self.vbox_main.addLayout(self.hbox_bottom)
         self.vbox_main.addStretch()
+        self.vbox_main.addWidget(self.quit_btn)
